@@ -7,6 +7,8 @@ The dataset contains customer-level information for a span of four consecutive m
 The business objective is to predict the churn in the last (i.e. the ninth) month using the data (features) from the first three months. To do this task well, understanding the typical customer behaviour during churn will be helpful.
 
 **Understanding customer behaviour during churn**
+
+
 Customers usually do not decide to switch to another competitor instantly, but rather over a period of time (this is especially applicable to high-value customers). In churn prediction, we assume that there are three phases of the customer lifecycle :
 
 The ‘good’ phase: In this phase, the customer is happy with the service and behaves as usual.
@@ -23,17 +25,22 @@ The data dictionary contains meanings of abbreviations. Some frequent ones are l
 The attributes containing 6, 7, 8, 9 as suffixes imply that those correspond to the months 6, 7, 8, 9 respectively.
 
 **Data preparation**
+
 The following data preparation steps are crucial for this problem:
+
 **1. Filter high-value customers**
 As mentioned above, you need to predict churn only for high-value customers. Define high-value customers as follows: Those who have recharged with an amount more than or equal to X, where X is the 70th percentile of the average recharge amount in the first two months (the good phase).
 After filtering the high-value customers, you should get about 30k rows.
+
 **2. Tag churners and remove attributes of the churn phase**
 Now tag the churned customers (churn=1, else 0) based on the fourth month as follows: Those who have not made any calls (either incoming or outgoing) AND have not used mobile internet even once in the churn phase. The attributes you need to use to tag churners are:
+
 total_ic_mou_9
 total_og_mou_9
 vol_2g_mb_9
 vol_3g_mb_9
 After tagging churners, remove all the attributes corresponding to the churn phase (all attributes having ‘ _9’, etc. in their names).
+
 
 **Modelling**
 Build models to predict churn. The predictive model that you’re going to build will serve two purposes:
