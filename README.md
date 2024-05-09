@@ -4,52 +4,41 @@
 Understanding the business objective and the data**
 The dataset contains customer-level information for a span of four consecutive months - June, July, August and September. The months are encoded as 6, 7, 8 and 9, respectively. 
 
-
 The business objective is to predict the churn in the last (i.e. the ninth) month using the data (features) from the first three months. To do this task well, understanding the typical customer behaviour during churn will be helpful.
 
-**Understanding customer behaviour during churn**
+**Understanding the Customer Journey:**
 
+Customers don't typically switch providers overnight. They go through a journey with distinct phases:
 
-Customers usually do not decide to switch to another competitor instantly, but rather over a period of time (this is especially applicable to high-value customers). In churn prediction, we assume that there are three phases of the customer lifecycle :
+**The Good Phase (Months 1 & 2):** Customers are happy with the service and use it regularly.
+**The Action Phase (Month 3):** Customer satisfaction might decline due to various reasons like competitor offers, service issues, or billing problems. This is the crucial phase for identifying potential churners.
+**The Churn Phase (Month 4):** Customers have discontinued using the service and are considered churned.
 
-The ‘good’ phase: In this phase, the customer is happy with the service and behaves as usual.
+**Building the Model: Targeting High-Value Customers**
 
-The ‘action’ phase: The customer experience starts to sore in this phase, for e.g. he/she gets a compelling offer from a competitor, faces unjust charges, becomes unhappy with service quality etc. In this phase, the customer usually shows different behaviour than in the ‘good’ months. Also, it is crucial to identify high-churn-risk customers in this phase, since some corrective actions can be taken at this point (such as matching the competitor’s offer/improving the service quality etc.)
+**Identifying High-Value Customers:**
+We'll focus on customers who consistently recharge with substantial amounts, typically exceeding the 70th percentile of average recharge amounts in the first two months (good phase). This filters the data down to a manageable size (around 30,000 customers) while prioritizing those most valuable to retain.
 
-The ‘churn’ phase: In this phase, the customer is said to have churned. You define churn based on this phase. Also, it is important to note that at the time of prediction (i.e. the action months), this data is not available to you for prediction. Thus, after tagging churn as 1/0 based on this phase, you discard all data corresponding to this phase.
+      **Defining Churn:** Customers with no incoming or outgoing calls and no mobile internet usage in the last month (churn phase) are classified as churned.
+      
+      **Data Preparation:** We'll remove data from the churn month to avoid biases. This allows us to analyze customer behavior in the "good" and "action" phases and predict their churn risk in the near future.
+**Modeling for Actionable Insights:**
 
-In this case, since you are working over a four-month window, the first two months are the ‘good’ phase, the third month is the ‘action’ phase, and the fourth month is the ‘churn’ phase.
+We'll build two distinct models to achieve our goals:
 
-**Data dictionary**
+**Churn Prediction Model:** This model will analyze customer behavior in the first three months and predict the likelihood of churn. Armed with this information, the company can take targeted actions to retain high-value customers at risk of churning. This might involve offering special plans, discounts, or addressing any service concerns they might have.
 
-The data dictionary contains meanings of abbreviations. Some frequent ones are loc (local), IC (incoming), OG (outgoing), T2T (telecom operator to telecom operator), T2O (telecom operator to another operator), RECH (recharge) etc.
-The attributes containing 6, 7, 8, 9 as suffixes imply that those correspond to the months 6, 7, 8, 9 respectively.
+**Important Feature Identification Model:**  This model goes beyond simple churn prediction. It delves deeper to identify specific factors in customer behavior that strongly correlate with churn. This allows the company to understand why customers are switching and what aspects of their service need improvement. For instance, the model might reveal a correlation between low call volumes and churn, indicating a need to improve network coverage or offer competitive calling plans.
 
-**Data preparation**
+**Addressing Class Imbalance:**
 
-The following data preparation steps are crucial for this problem:
+Since churn rates are typically low (around 5-10%), our data will have a class imbalance. This means there are significantly more non-churned customers compared to churned ones. To ensure the model's accuracy, we'll employ techniques to handle this imbalance, ensuring it doesn't favor the more prevalent (non-churned) class.
 
-**1. Filter high-value customers**
-As mentioned above, you need to predict churn only for high-value customers. Define high-value customers as follows: Those who have recharged with an amount more than or equal to X, where X is the 70th percentile of the average recharge amount in the first two months (the good phase).
-After filtering the high-value customers, you should get about 30k rows.
+**The Benefits: Retention and Growth**
 
-**2. Tag churners and remove attributes of the churn phase**
-Now tag the churned customers (churn=1, else 0) based on the fourth month as follows: Those who have not made any calls (either incoming or outgoing) AND have not used mobile internet even once in the churn phase. The attributes you need to use to tag churners are:
+By analyzing customer behavior and building churn prediction models, telecom companies can gain a significant advantage. They can:
 
-total_ic_mou_9
-total_og_mou_9
-vol_2g_mb_9
-vol_3g_mb_9
-After tagging churners, remove all the attributes corresponding to the churn phase (all attributes having ‘ _9’, etc. in their names).
-
-
-**Modelling**
-
-
-Build models to predict churn. The predictive model that you’re going to build will serve two purposes:
-  * It will be used to predict whether a high-value customer will churn or not, in near future (i.e. churn phase). By knowing this, the company can take action steps such as providing special plans, discounts on recharge etc.
-  * It will be used to identify important variables that are strong predictors of churn. These variables may also indicate why customers choose to switch to other networks.
-In some cases, both of the above-stated goals can be achieved by a single machine learning model.
-Also, since the rate of churn is typically low (about 5-10%, this is called class-imbalance) - try using techniques to handle class imbalance.
-
-Therefore, build another model with the main objective of identifying important predictor attributes which help the business understand indicators of churn. A good choice to identify important variables is a logistic regression model or a model from the tree family. In the case of logistic regression, make sure to handle multicollinearity.
+**Proactively retain high-value customers:** By identifying churn risk early, companies can take targeted actions to prevent valuable customers from leaving.
+**Reduce customer churn:** Lower churn rates translate to increased customer lifetime value and overall revenue growth.
+**Gain customer insights:** The churn identification model helps pinpoint the reasons behind customer churn. This allows companies to address service issues, improve offerings, and stay competitive in the market.
+In conclusion, churn prediction models are powerful tools that leverage customer data to predict churn risk and identify its root causes. By implementing these models, telecom companies can gain valuable insights into customer behavior, take proactive steps to retain their most valuable customers, and ultimately achieve sustainable growth.
